@@ -30,9 +30,6 @@ g2 <- (1 / (exp(alpha * wHS) + exp(alpha * wHT) + exp(alpha * wHN))) *
 
 Helper_decision <- Helper_decision(g2)
 
-scatter3D(aS, aT, aH, colvar = Helper_decision)
-
-
 
 g1 <- (1 / (exp(beta * wS) + exp(beta * wS))) * 
       c(exp(beta * wS), exp(beta * wS))
