@@ -10,7 +10,7 @@ aH <- Mutation(ar, c)
 b <- 5
 
 alpha <- 1000
-beta <-1000
+beta <- 1000
 
 wSS <- (b * aS) / (b * (aS + aH) + aT)
 wTS <- (aT) / (b * (aS + aH) + aT)
@@ -30,6 +30,16 @@ g2 <- (1 / (exp(alpha * wHS) + exp(alpha * wHT) + exp(alpha * wHN))) *
 
 Helper_decision <- Helper_decision(g2)
 
+wS <- Helper_decision * c(wSS, wST, wSN)
 
 g1 <- (1 / (exp(beta * wS) + exp(beta * wS))) * 
       c(exp(beta * wS), exp(beta * wS))
+
+
+
+  
+
+
+
+
+
