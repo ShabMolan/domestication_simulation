@@ -11,10 +11,6 @@ NRUN <- 10  # 100
 source("R/functions.R")
 
 
-
-
-
-
 b <- 5.0
 c <- 0.05
 gamma <- 0.1

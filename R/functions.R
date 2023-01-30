@@ -1,37 +1,47 @@
 VERS <- 2.00
-SEED <- 13
+SEED <- 123
 NIND <- 1000
 TMAX <- 1100  # 110000
 BURN <- 100   # 10000
 NRUN <- 10  # 100
 
 
-#' Title
-#' 
-#' 
+
+#' Mutation
+#' @param ar resident ability
+#' @param c cost of ability
 #'
-#' @param ar 
-#' @param c 
-#'
-#' @return
-Mutation <- function(ar, c) { # why c and what is ar
-  return(2*1.0/(4*c) * runif(1))
+#' @return am (mutant ability)
+Mutation <- function(ar, c) {
+  return(ar/(2*c) * runif(1))
 }
 
 
-#' Title
+
+#' Hyper Geometric Distribution (HGD)
+#' @param i sample size of mutants
+#' @param n population size
+#' @param k number of mutants
+#' @param m sample size of residents
 #'
-#' @param b 
-#' @param c 
-#' @param gamma 
-#' @param am 
-#' @param a 
-#' @param k 
+#' @return probability of drawing mutants
+HGD <- function(i, n, k, m) {
+  res <- (choose(k , i) * choose(n-k , m-i)) / choose(n , m)
+  return(res)
+}
+
+
+
+#' Fitness
 #'
-#' @return
-#' @export
+#' @param b synergy
+#' @param c cost of ability
+#' @param gamma selection strength
+#' @param am mutant ability
+#' @param a ability
+#' @param k number of mutants
 #'
-#' @examples
+#' @return fitness
 Fitness <- function(b, c, gamma, am, a, k) { # removed the *
   if(b<a*(a+3*am)/((a+am)*(a-am))){
     fm <- 1+gamma*(HGD(0,NIND-1,k-1,2)*am*(a+3*am)/(3*(a+am)*(a+am))
@@ -93,35 +103,13 @@ Fitness <- function(b, c, gamma, am, a, k) { # removed the *
 }
 
 
-#' Title
-#'
-#' @param i 
-#' @param n 
-#' @param K 
-#' @param m 
-#'
-#' @return
-#' @export
-#'
-#' @examples
-HGD <- function(i, n, K, m) {
-  res <- choose(K,i)*choose(n-K,m-i)/choose(n,m)
-  return(res)
-}
 
-
-
-
-#' Title
+#' Reproduction
+#' @param nm number of mutants
+#' @param fm mutant fitness
+#' @param fr resident fitness
 #'
-#' @param nm 
-#' @param fm 
-#' @param fr 
-#'
-#' @return
-#' @export
-#'
-#' @examples
+#' @return number of mutants in next generation
 Reproduction <- function(nm, fm, fr) {
   nmn <- 0
   for(i in 0:(NIND-1)) {
@@ -130,3 +118,13 @@ Reproduction <- function(nm, fm, fr) {
   }
   return(nmn)
 }
+
+
+
+Helper_decision <- function(g2) {
+  if (g2[1] > g2[2] && g2[1] > g2[3]) {g2 <- c(1, 0, 0)}
+  else if (g2[2] > g2[1] && g2[2] > g2[3]) {g2 <- c(0, 1, 0)}
+  else {g2 <- c(0, 0, 1)}
+  return(g2)
+}
+
