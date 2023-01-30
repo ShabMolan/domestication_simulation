@@ -1,5 +1,5 @@
 VERS <- 2.00
-SEED <- 13
+SEED <- 123
 NIND <- 1000
 TMAX <- 1100  # 110000
 BURN <- 100   # 10000
@@ -11,26 +11,22 @@ NRUN <- 10  # 100
 #' @param ar resident ability
 #' @param c cost of ability
 #'
-#' @return am: mutant ability
+#' @return am (mutant ability)
 Mutation <- function(ar, c) {
   return(ar/(2*c) * runif(1))
 }
 
 
 
-#' hypergeometric distribution (HGD)
+#' Hyper Geometric Distribution (HGD)
+#' @param i sample size of mutants
+#' @param n population size
+#' @param k number of mutants
+#' @param m sample size of residents
 #'
-#' @param i 
-#' @param n 
-#' @param K 
-#' @param m 
-#'
-#' @return
-#' @export
-#'
-#' @examples
-HGD <- function(i, n, K, m) {
-  res <- (choose(K , i) * choose(n-K , m-i)) / choose(n , m)
+#' @return probability of drawing mutants
+HGD <- function(i, n, k, m) {
+  res <- (choose(k , i) * choose(n-k , m-i)) / choose(n , m)
   return(res)
 }
 
@@ -38,14 +34,14 @@ HGD <- function(i, n, K, m) {
 
 #' Fitness
 #'
-#' @param b 
-#' @param c 
-#' @param gamma 
-#' @param am 
-#' @param a 
-#' @param k 
+#' @param b synergy
+#' @param c cost of ability
+#' @param gamma selection strength
+#' @param am mutant ability
+#' @param a ability
+#' @param k number of mutants
 #'
-#' @return
+#' @return fitness
 Fitness <- function(b, c, gamma, am, a, k) { # removed the *
   if(b<a*(a+3*am)/((a+am)*(a-am))){
     fm <- 1+gamma*(HGD(0,NIND-1,k-1,2)*am*(a+3*am)/(3*(a+am)*(a+am))
@@ -108,19 +104,12 @@ Fitness <- function(b, c, gamma, am, a, k) { # removed the *
 
 
 
-
-
-
-#' Title
+#' Reproduction
+#' @param nm number of mutants
+#' @param fm mutant fitness
+#' @param fr resident fitness
 #'
-#' @param nm 
-#' @param fm 
-#' @param fr 
-#'
-#' @return
-#' @export
-#'
-#' @examples
+#' @return number of mutants in next generation
 Reproduction <- function(nm, fm, fr) {
   nmn <- 0
   for(i in 0:(NIND-1)) {
